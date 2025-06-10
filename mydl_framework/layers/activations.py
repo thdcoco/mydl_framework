@@ -1,16 +1,28 @@
-# mydl_framework/layers/activations.py
+import numpy as np
+from mydl_framework.autodiff.function import Function
 
-from mydl_framework.autodiff.functions import relu, sigmoid, tanh
+class ReLU(Function):
+    def forward(self, x):
+        self.mask = x > 0
+        return x * self.mask
 
-class ReLU:
-    def __call__(self, x):
-        # x: Variable
-        return relu(x)
+    def backward(self, gy):
+        return gy * self.mask
 
-class Sigmoid:
-    def __call__(self, x):
-        return sigmoid(x)
+class Sigmoid(Function):
+    def forward(self, x):
+        y = 1 / (1 + np.exp(-x))
+        self.y = y
+        return y
 
-class Tanh:
-    def __call__(self, x):
-        return tanh(x)
+    def backward(self, gy):
+        return gy * (1 - self.y) * self.y
+
+class Tanh(Function):
+    def forward(self, x):
+        y = np.tanh(x)
+        self.y = y
+        return y
+
+    def backward(self, gy):
+        return gy * (1 - self.y ** 2)

@@ -1,17 +1,19 @@
 import numpy as np
-from mydl_framework.autodiff.variable import Variable
 
-class CrossEntropy:
-    def __init__(self): pass
+class SoftmaxCrossEntropy:
+    def __init__(self):
+        self.probs = None
+        self.labels = None
+
     def __call__(self, logits, labels):
-        # logits shape: (batch, classes)
+        # 숫자 안정화
         logits = logits - np.max(logits, axis=1, keepdims=True)
         exp = np.exp(logits)
         probs = exp / np.sum(exp, axis=1, keepdims=True)
-        N = logits.shape[0]
-        loss = -np.log(probs[np.arange(N), labels]).mean()
         self.probs = probs
         self.labels = labels
+        N = logits.shape[0]
+        loss = -np.log(probs[np.arange(N), labels]).mean()
         return loss
 
     def backward(self):

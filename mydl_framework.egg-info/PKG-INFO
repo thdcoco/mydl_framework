@@ -1,12 +1,8 @@
 Metadata-Version: 2.4
 Name: mydl_framework
-Version: 0.1.0
-Summary: A simple deep learning framework
-Author: Your Name
-Requires-Python: >=3.7
-Requires-Dist: numpy
-Requires-Dist: pytest
-Dynamic: author
+Version: 0.1
+Requires-Dist: numpy>=1.19.0
+Requires-Dist: matplotlib>=3.3.0
+Requires-Dist: openai>=0.27.0
+Requires-Dist: pytest>=6.0
 Dynamic: requires-dist
-Dynamic: requires-python
-Dynamic: summary

@@ -1,10 +1,14 @@
+# mydl_framework/layers/loss.py
+
 import numpy as np
-from mydl_framework.autodiff.variable import Variable
 
 class CrossEntropy:
-    def __init__(self): pass
+    def __init__(self):
+        pass
+
     def __call__(self, logits, labels):
-        # logits shape: (batch, classes)
+        # logits: (batch, classes)
+        # 숫자 안정화
         logits = logits - np.max(logits, axis=1, keepdims=True)
         exp = np.exp(logits)
         probs = exp / np.sum(exp, axis=1, keepdims=True)
