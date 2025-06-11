@@ -4,10 +4,10 @@ import numpy as np
 
 class CrossEntropy:
     def __init__(self):
-        pass
+        self.probs = None
+        self.labels = None
 
     def __call__(self, logits, labels):
-        # logits: (batch, classes)
         # 숫자 안정화
         logits = logits - np.max(logits, axis=1, keepdims=True)
         exp = np.exp(logits)
