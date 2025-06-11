@@ -1,5 +1,5 @@
 import pytest
-from mydl_framework.datasets.mnist_loader import MNISTLoader
+from testrix.datasets.mnist_loader import MNISTLoader
 
 def test_mnist_loader():
     loader = MNISTLoader(train=True, batch_size=32)

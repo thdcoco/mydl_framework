@@ -2,15 +2,15 @@
 import streamlit as st
 import numpy as np
 import json
-from mydl_framework.llm_support.gpt_client import GPTClient
-from mydl_framework.llm_support.model_builder import ModelBuilder
-from mydl_framework.datasets.mnist_loader import MNISTLoader
-from mydl_framework.optimizers.adam import Adam
-from mydl_framework.training.trainer import Trainer
+from testrix.llm_support.gpt_client import GPTClient
+from testrix.llm_support.model_builder import ModelBuilder
+from testrix.datasets.mnist_loader import MNISTLoader
+from testrix.optimizers.adam import Adam
+from testrix.training.trainer import Trainer
 import matplotlib.pyplot as plt
 from sklearn.metrics import confusion_matrix, classification_report
 
-st.title("나만의 딥러닝 프레임워크 인터랙티브 데모")
+st.title("Testrix Interactive Demo")
 
 # 사이드바: 하이퍼파라미터 설정
 st.sidebar.header("하이퍼파라미터 설정")
@@ -55,9 +55,9 @@ if st.sidebar.button("학습 시작하기"):
 
     # 6) 학습 곡선 시각화
     fig, ax = plt.subplots()
-    ax.plot(loss_hist, label="훈련 손실")
-    ax.plot(acc_hist, label="검증 정확도")
-    ax.set_xlabel("에포크")
+    ax.plot(loss_hist, label="training loss")
+    ax.plot(acc_hist, label="accuracy")
+    ax.set_xlabel("Epochs")
     ax.legend()
     st.pyplot(fig)
 

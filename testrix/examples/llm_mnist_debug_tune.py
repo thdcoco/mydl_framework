@@ -12,11 +12,11 @@ except ImportError:
     print("⚠️ scikit-learn이 없어 혼동 행렬/분류 리포트를 건너뜁니다.")
     has_sklearn = False
 
-from mydl_framework.llm_support.gpt_client import GPTClient
-from mydl_framework.llm_support.model_builder import ModelBuilder
-from mydl_framework.datasets.mnist_loader import MNISTLoader
-from mydl_framework.optimizers.adam import Adam
-from mydl_framework.training.trainer import Trainer
+from testrix.llm_support.gpt_client import GPTClient
+from testrix.llm_support.model_builder import ModelBuilder
+from testrix.datasets.mnist_loader import MNISTLoader
+from testrix.optimizers.adam import Adam
+from testrix.training.trainer import Trainer
 
 # --- Configuration ---
 NL_DESC        = "3-layer MLP, hidden 256, ReLU, output 10, CrossEntropy"

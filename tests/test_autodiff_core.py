@@ -1,6 +1,6 @@
 import pytest
-from mydl_framework.autodiff.variable import Variable
-from mydl_framework.autodiff.function import add, mul
+from testrix.autodiff.variable import Variable
+from testrix.autodiff.function import add, mul
 
 def test_add_mul():
     x = Variable(2.0)

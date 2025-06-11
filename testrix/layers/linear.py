@@ -1,6 +1,6 @@
 import numpy as np
-from mydl_framework.autodiff.variable import Variable
-from mydl_framework.autodiff.function import Function
+from testrix.autodiff.variable import Variable
+from testrix.autodiff.function import Function
 
 class Linear(Function):
     def __init__(self, in_features, out_features):

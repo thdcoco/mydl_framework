@@ -41,9 +41,9 @@ class Variable:
                     funcs.append(x.creator)
 
     def __add__(self, other):
-        from mydl_framework.autodiff.function import add
+        from testrix.autodiff.function import add
         return add(self, other)
 
     def __mul__(self, other):
-        from mydl_framework.autodiff.function import mul
+        from testrix.autodiff.function import mul
         return mul(self, other)

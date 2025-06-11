@@ -1,8 +1,8 @@
 # mydl_framework/training/trainer.py
 
 import matplotlib.pyplot as plt
-from mydl_framework.autodiff.variable import Variable
-from mydl_framework.layers.softmax_cross_entropy import SoftmaxCrossEntropy
+from testrix.autodiff.variable import Variable
+from testrix.layers.softmax_cross_entropy import SoftmaxCrossEntropy
 
 class Trainer:
     def __init__(self, model, optimizer, train_loader, val_loader, num_epochs=10):

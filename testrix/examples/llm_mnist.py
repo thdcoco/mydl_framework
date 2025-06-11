@@ -4,11 +4,11 @@ import os
 import json
 import matplotlib.pyplot as plt
 
-from mydl_framework.llm_support.gpt_client import GPTClient
-from mydl_framework.llm_support.model_builder import ModelBuilder
-from mydl_framework.datasets.mnist_loader import MNISTLoader
-from mydl_framework.optimizers.sgd import SGD
-from mydl_framework.training.trainer import Trainer
+from testrix.llm_support.gpt_client import GPTClient
+from testrix.llm_support.model_builder import ModelBuilder
+from testrix.datasets.mnist_loader import MNISTLoader
+from testrix.optimizers.sgd import SGD
+from testrix.training.trainer import Trainer
 
 # 0. (선택) 환경변수로 세팅되어 있지 않다면 직접
 # os.environ["OPENAI_API_KEY"] = "your_openai_api_key_here"

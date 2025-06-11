@@ -1,5 +1,5 @@
 import numpy as np
-from mydl_framework.autodiff.variable import Variable
+from testrix.autodiff.variable import Variable
 
 class CrossEntropy:
     def __init__(self): pass

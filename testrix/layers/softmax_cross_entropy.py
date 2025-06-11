@@ -1,8 +1,8 @@
 # mydl_framework/layers/softmax_cross_entropy.py
 
 import numpy as np
-from mydl_framework.autodiff.function import Function
-from mydl_framework.autodiff.variable import Variable
+from testrix.autodiff.function import Function
+from testrix.autodiff.variable import Variable
 
 class SoftmaxCrossEntropy(Function):
     def forward(self, x, t):

@@ -11,7 +11,7 @@ class Function:
         # 호출 직전에, 입력 Variable들의 세대 중 최대값을 자신의 세대로 설정
         self.generation = max(x.generation for x in inputs)
         # Variable은 여기서만 임포트하여 순환참조 방지
-        from mydl_framework.autodiff.variable import Variable
+        from testrix.autodiff.variable import Variable
 
         xs = [x.data for x in inputs]
         ys = self.forward(*xs)

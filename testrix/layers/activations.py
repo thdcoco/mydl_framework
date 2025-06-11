@@ -1,5 +1,5 @@
 import numpy as np
-from mydl_framework.autodiff.function import Function
+from testrix.autodiff.function import Function
 
 class ReLU(Function):
     def forward(self, x):

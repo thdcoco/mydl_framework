@@ -1,8 +1,8 @@
 import numpy as np
-from mydl_framework.autodiff.variable import Variable
-from mydl_framework.layers.linear import Linear
-from mydl_framework.layers.activations import ReLU, Sigmoid, Tanh
-from mydl_framework.layers.softmax_cross_entropy import SoftmaxCrossEntropy
+from testrix.autodiff.variable import Variable
+from testrix.layers.linear import Linear
+from testrix.layers.activations import ReLU, Sigmoid, Tanh
+from testrix.layers.softmax_cross_entropy import SoftmaxCrossEntropy
 
 class ModelBuilder:
     @staticmethod
