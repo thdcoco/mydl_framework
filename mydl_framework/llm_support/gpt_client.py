@@ -1,5 +1,3 @@
-# mydl_framework/llm_support/gpt_client.py
-
 import os
 import openai
 import json
@@ -21,66 +19,59 @@ class GPTClient:
         return response.choices[0].message.content.strip()
 
     def to_graph_input(self, natural_language: str) -> dict:
-        # 1) 프롬프트 생성
         prompt = (
             "Convert the following description into JSON spec for MyDL Framework models.\n"
             f"Description: '{natural_language}'\nJSON:"
         )
-        # 2) LLM 호출 및 raw 응답
         raw = self.infer(prompt, max_tokens=500)
         print("<< RAW LLM RESPONSE >>")
         print(raw)
 
-        # 3) JSON 본문 추출
+        # JSON body만 꺼내 파싱
         start = raw.find('{')
-        end = raw.rfind('}')
-        body = raw[start:end+1] if start != -1 and end != -1 else raw
+        end   = raw.rfind('}')
+        body  = raw[start:end+1] if start != -1 and end != -1 else raw
+        spec  = json.loads(body)
 
-        # 4) JSON 파싱
-        spec = json.loads(body)
-
-        # 5) 'model' 래핑 언랩
+        # 언랩 model 래핑
         if isinstance(spec.get("model"), dict):
             spec = spec["model"]
 
-        # 6) 레이어 스펙 가공 (size 우선)
+        # 손실 추출
+        loss_field = spec.get("loss") or spec.get("loss_function")
+        loss_type  = (
+            loss_field.get("type") if isinstance(loss_field, dict) 
+            else (loss_field if isinstance(loss_field, str) else "CrossEntropy")
+        )
+
+        # 레이어 가공
         layers = []
         for layer in spec.get("layers", []):
-            raw_type = layer.get("type", "").lower()
-            if raw_type == "input":
+            t = layer.get("type", "").lower()
+            # input 스킵
+            if "input" in t:
+                continue
+            # loss name 스킵
+            if loss_type.lower() in t:
                 continue
 
-            # size → units → parameters 내부 키 순으로 추출
-            size = layer.get("size")
-            units = size or layer.get("units")
-            params = layer.get("parameters", {}) or {}
-            units = (
-                units
-                or params.get("units")
-                or params.get("hidden_units")
-                or params.get("output_units")
-                or params.get("size")
-            )
+            # units, activation 획득
+            units      = layer.get("units") or layer.get("size")
+            params     = layer.get("parameters", {}) or {}
+            units     = units or params.get("units") or params.get("hidden_units") or params.get("output_units")
             activation = layer.get("activation") or params.get("activation")
 
-            if raw_type in ("dense", "linear", "fullyconnected", "hidden", "output"):
+            # dense가 포함된 모든 타입 → Linear
+            if "dense" in t or "fullyconnected" in t or "hidden" in t or "output" in t:
                 layers.append({"type": "Linear", "out_features": units})
+                # Softmax는 손실 함수에 포함하므로 생략
                 if activation and activation.lower() != "softmax":
                     layers.append({"type": activation})
-
-            elif raw_type in ("relu", "sigmoid", "tanh"):
+            # activation 단독
+            elif t in ("relu", "sigmoid", "tanh"):
                 layers.append({"type": layer.get("type")})
-
+            # 기타 그대로
             else:
                 layers.append(layer)
-
-        # 7) 손실 함수 추출
-        loss_field = spec.get("loss")
-        if isinstance(loss_field, dict):
-            loss_type = loss_field.get("type", "CrossEntropy")
-        elif isinstance(loss_field, str):
-            loss_type = loss_field
-        else:
-            loss_type = "CrossEntropy"
 
         return {"layers": layers, "loss": loss_type}

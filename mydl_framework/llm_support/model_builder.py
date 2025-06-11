@@ -1,42 +1,37 @@
-# mydl_framework/llm_support/model_builder.py
 import numpy as np
-from mydl_framework.layers import Linear, ReLU, Sigmoid, Tanh, CrossEntropy
 from mydl_framework.autodiff.variable import Variable
+from mydl_framework.layers.linear import Linear
+from mydl_framework.layers.activations import ReLU, Sigmoid, Tanh
+from mydl_framework.layers.softmax_cross_entropy import SoftmaxCrossEntropy
 
 class ModelBuilder:
     @staticmethod
     def from_spec(spec: dict, input_dim: int):
         layers = []
         current_dim = input_dim
-        for layer_cfg in spec.get("layers", []):
-            t = layer_cfg.get("type")
-            if t == "Linear":
-                out_f = layer_cfg.get("out_features")
-                layers.append(Linear(current_dim, out_f))
-                current_dim = out_f
-            elif t in ("ReLU", "Sigmoid", "Tanh"):  # activation
-                if t == "ReLU":
-                    layers.append(ReLU())
-                elif t == "Sigmoid":
-                    layers.append(Sigmoid())
-                else:
-                    layers.append(Tanh())
-            else:
-                raise ValueError(f"Unsupported layer type: {t}")
-        # 손실 함수
-        loss_name = spec.get("loss", "CrossEntropy")
-        if loss_name == "CrossEntropy":
-            loss = CrossEntropy()
-        else:
-            raise ValueError(f"Unsupported loss: {loss_name}")
 
+        for cfg in spec.get("layers", []):
+            t = cfg["type"].lower()
+            if t == "linear":
+                out_dim = cfg["out_features"]
+                layers.append(Linear(current_dim, out_dim))
+                current_dim = out_dim
+            elif t == "relu":
+                layers.append(ReLU())
+            elif t == "sigmoid":
+                layers.append(Sigmoid())
+            elif t == "tanh":
+                layers.append(Tanh())
+            else:
+                # 이미 gpt_client에서 필터링했으니 여기서는 안전
+                continue
+
+        # 손실 함수는 Trainer에서 SoftmaxCrossEntropy로 처리
         class SimpleModel:
-            def __init__(self, layers, loss_fn):
+            def __init__(self, layers):
                 self.layers = layers
-                self.loss_fn = loss_fn
 
             def __call__(self, x):
-                # NumPy 배열이면 Variable로 자동 래핑
                 if isinstance(x, np.ndarray):
                     x = Variable(x)
                 out = x
@@ -45,10 +40,10 @@ class ModelBuilder:
                 return out
 
             def parameters(self):
-                params = []
-                for layer in self.layers:
-                    if hasattr(layer, 'params'):
-                        params.extend(layer.params)
-                return params
+                ps = []
+                for l in self.layers:
+                    if hasattr(l, "params"):
+                        ps.extend(l.params)
+                return ps
 
-        return SimpleModel(layers, loss)
+        return SimpleModel(layers)

@@ -1,23 +1,25 @@
+# mydl_framework/layers/softmax_cross_entropy.py
+
 import numpy as np
+from mydl_framework.autodiff.function import Function
+from mydl_framework.autodiff.variable import Variable
 
-class SoftmaxCrossEntropy:
-    def __init__(self):
-        self.probs = None
-        self.labels = None
-
-    def __call__(self, logits, labels):
+class SoftmaxCrossEntropy(Function):
+    def forward(self, x, t):
+        # x: logits (batch, classes), t: labels (batch,)
         # 숫자 안정화
-        logits = logits - np.max(logits, axis=1, keepdims=True)
-        exp = np.exp(logits)
-        probs = exp / np.sum(exp, axis=1, keepdims=True)
-        self.probs = probs
-        self.labels = labels
-        N = logits.shape[0]
-        loss = -np.log(probs[np.arange(N), labels]).mean()
+        x = x - np.max(x, axis=1, keepdims=True)
+        exp = np.exp(x)
+        self.probs = exp / np.sum(exp, axis=1, keepdims=True)
+        self.labels = t
+        N = x.shape[0]
+        loss = -np.log(self.probs[np.arange(N), t]).mean()
         return loss
 
-    def backward(self):
+    def backward(self, gy):
+        # gy: upstream gradient (scalar)
         N = self.probs.shape[0]
         grad = self.probs.copy()
         grad[np.arange(N), self.labels] -= 1
-        return grad / N
+        grad = grad * (gy / N)
+        return grad, None   # second None for t
