@@ -47,6 +47,7 @@ Python 3.9+
 
 dependencies: requirements.txt 참고
 
+---
 
 ## ⚙️ Installation
 
@@ -61,6 +62,7 @@ dependencies: requirements.txt 참고
 
     pip install -r requirements.txt
 
+---
 
 ## 🚀 사용 방법 (Usage)
 
@@ -72,7 +74,170 @@ learning rate / batch size / epochs / hidden units 등
 학습 시작하기 클릭
 결과 확인
 
+---
+
+## 🧾 Model Spec (JSON)
+
+testrix는 자연어로 입력된 모델 구조를 내부적으로 JSON 스펙으로 변환한 뒤, 해당 스펙을 기반으로 모델을 구성합니다.
+
+JSON 예시
+
+아래는 3-Layer MLP를 정의하는 JSON 예시입니다.
+
+    {
+      "model": {
+        "name": "3-Layer MLP",
+        "layers": [
+          {
+            "type": "hidden",
+            "units": 256,
+            "activation": "ReLU"
+          },
+          {
+            "type": "output",
+            "units": 10
+          }
+        ],
+        "loss_function": "CrossEntropy"
+      }
+    }
+
+필드 설명 (Field Guide)
+
+model.name
+모델 이름(표시용)
+
+model.layers
+레이어 구성 리스트(앞에서부터 순서대로 적용)
+
+layers[].type
+레이어 타입
+
+hidden: 은닉층
+
+output: 출력층
+
+layers[].units
+해당 레이어의 뉴런 수
+
+layers[].activation (optional)
+활성화 함수 이름 (예: ReLU, Sigmoid, Tanh 등)
+일반적으로 hidden 레이어에서 사용
+
+model.loss_function
+손실 함수 (예: CrossEntropy)
+
+참고: 실제 지원하는 스펙 키워드/옵션은 testfix/llm_support/ 및 예제(testfix/examples/)를 기준으로 확장할 수 있습니다.
+
+---
+
+## 🧱 Project Structure
+    .
+    ├─ data/
+    │  ├─ t10k-images-idx3-ubyte.gz
+    │  ├─ t10k-labels-idx1-ubyte.gz
+    │  ├─ train-images-idx3-ubyte.gz
+    │  └─ train-labels-idx1-ubyte.gz
+    ├─ testfix/
+    │  ├─ autodiff/
+    │  │  ├─ __init__.py
+    │  │  ├─ function.py
+    │  │  └─ variable.py
+    │  ├─ datasets/
+    │  │  ├─ __init__.py
+    │  │  └─ mnist_loader.py
+    │  ├─ examples/
+    │  │  ├─ __init__.py
+    │  │  ├─ llm_mnist.py
+    │  │  └─ llm_mnist_debug_tune.py
+    │  ├─ layers/
+    │  │  ├─ __init__.py
+    │  │  ├─ activations.py
+    │  │  ├─ base.py
+    │  │  ├─ linear.py
+    │  │  └─ softmax_cross_entropy.py
+    │  ├─ llm_support/
+    │  │  ├─ __init__.py
+    │  │  ├─ gpt_client.py
+    │  │  ├─ loss.py
+    │  │  └─ model_builder.py
+    │  ├─ optimizers/
+    │  │  ├─ __init__.py
+    │  │  ├─ adam.py
+    │  │  └─ sgd.py
+    │  ├─ training/
+    │  │  ├─ __init__.py
+    │  │  └─ trainer.py
+    │  └─ __init__.py
+    ├─ tests/
+    │  ├─ test_autodiff_core.py
+    │  ├─ test_datasets_mnist.py
+    │  └─ test_llm_support.py
+    ├─ .gitignore
+    ├─ README.md
+    ├─ app.py
+    ├─ requirements.txt
+    └─ setup.py
+
+모듈 요약 (Modules)
+
+testfix/autodiff
+Variable/Function 기반 자동미분 코어
+
+testfix/layers
+Linear/Activation/Loss 등 레이어 구현
+
+testfix/optimizers
+SGD / Adam 최적화 알고리즘
+
+testfix/training
+학습 루프(Trainer) 및 평가 로직
+
+testfix/datasets
+MNIST 데이터 로더
+
+testfix/llm_support
+자연어 → JSON 스펙 변환 및 모델 빌더
+
+testfix/examples
+실행 예제
+
+tests
+유닛 테스트
 
 
+---
 
 
+## 🛠️ Troubleshooting
+MNIST 파일을 못 찾는 경우
+
+data/ 폴더에 아래 4개 파일이 있는지 확인하세요.
+
+train-images-idx3-ubyte.gz
+
+train-labels-idx1-ubyte.gz
+
+t10k-images-idx3-ubyte.gz
+
+t10k-labels-idx1-ubyte.gz
+
+자연어 파싱 결과가 이상한 경우
+
+testfix/examples/llm_mnist_debug_tune.py로 JSON 스펙 출력/로그를 확인하세요.
+
+testfix/llm_support/model_builder.py의 스펙 처리 규칙을 확인하세요.
+
+---
+
+## 🗺️ Roadmap (optional)
+
+ CNN 템플릿 지원(Conv/Pool 블록)
+
+ Spec(JSON) 저장/불러오기(프리셋)
+
+ 실험 결과 export(JSON/CSV)
+
+ Early stopping / LR scheduler
+
+ 모델 요약(파라미터 수/구조) UI 출력
