@@ -40,13 +40,6 @@ testrix는 아래 파이프라인으로 동작합니다.
 
 ---
 
-## 🖼️ Screenshot (optional)
-
-레포에 스크린샷 파일을 추가했다면 아래처럼 연결할 수 있습니다.
-
-```md
-<img src="assets/demo.png" width="900" alt="testrix demo" />```
-
 
 ## ✅ Requirements
 
@@ -70,11 +63,16 @@ dependencies: requirements.txt 참고
 
 
 ## 🚀 사용 방법 (Usage)
-streamlit run app.py
+
+    streamlit run app.py
+    
 왼쪽 사이드바에서 하이퍼파라미터 설정
 learning rate / batch size / epochs / hidden units 등
 모델 구조를 자연어로 입력
 학습 시작하기 클릭
 결과 확인
+
+
+
 
 
